@@ -2,11 +2,18 @@
  * 플레이 씬 관리자
  */
 class CManager_PlayScene extends Phaser.Scene {
+	/**
+	 * 상태
+	 */
+	static STATE_READY = 0;
+	static STATE_PLAY = 1;
+	static STATE_GAME_OVER = 2;
 
 	/** 생성자 */
 	constructor() {
 		super("Scene_Play");
 
+		this.State = CManager_PlayScene.STATE_READY;
 		this.m_oListSprites_BG = [];
 	}
 
@@ -39,19 +46,27 @@ class CManager_PlayScene extends Phaser.Scene {
 		this.m_oSprite_Player = this.physics.add.sprite(250.0, this.scale.height / 2.0 - 350.0, "Img_Player");
 		this.m_oSprite_Player.setCollideWorldBounds(true);
 
-		this.physics.add.collider(this.m_oSprite_Player, this.m_oGroup_Obstacle);
-		this.physics.add.collider(this.m_oSprite_Player, this.m_oGroup_Bounding);
-
 		this.m_oCursor_Keyboard = this.input.keyboard.createCursorKeys();
-		this.physics.add.collider(this.m_oSprite_Player, this.m_oSprite_Bottom);
+
+		this.physics.add.collider(this.m_oSprite_Player,
+			this.m_oGroup_Obstacle, this.handleOnCollision_Enter, null, this);
+
+		this.physics.add.collider(this.m_oSprite_Player,
+			this.m_oGroup_Bounding, this.handleOnCollision_Enter, null, this);
 
 		this.time.delayedCall(750, () => {
+			this.State = CManager_PlayScene.STATE_PLAY;
 			this.m_oSprite_Player.setGravity(0.0, 980.0 * 2.0);
 		}, [], this);
 	}
 
 	/** 상태를 갱신한다 */
 	update(a_fTime, a_fTime_Delta) {
+		// 상태 갱신이 불가능 할 경우
+		if (this.State != CManager_PlayScene.STATE_PLAY) {
+			return;
+		}
+
 		for (var i = 0; i < this.m_oListSprites_BG.length; ++i) {
 			var oSprite_BG = this.m_oListSprites_BG[i];
 			oSprite_BG.setX(oSprite_BG.x + (250.0 * -1.0 * a_fTime_Delta / 1000.0));
@@ -85,12 +100,15 @@ class CManager_PlayScene extends Phaser.Scene {
 
 	/** 경계를 설정한다 */
 	setupBounding() {
-		var oSprite_Bottom = this.physics.add.staticSprite(this.scale.width / 2.0, this.scale.height, null);
+		var oSprite_Bottom = this.m_oGroup_Bounding.create(this.scale.width / 2.0, this.scale.height, null);
 		oSprite_Bottom.setVisible(false);
 
 		oSprite_Bottom.setSize(this.scale.width, 450.0);
 		oSprite_Bottom.setOrigin(0.5, 1.0);
+	}
 
-		this.m_oGroup_Bounding.add(oSprite_Bottom);
+	/** 충돌 시작을 처리한다 */
+	handleOnCollision_Enter(a_oSender, a_oTarget) {
+		this.State = CManager_PlayScene.STATE_GAME_OVER;
 	}
 };
