@@ -4,9 +4,9 @@ const g_oConfig = {
 
 	scale: {
 		width: 1920,
-		height: 1080,
+		height: 1280,
 
-		mode: Phaser.Scale.EXPAND,
+		mode: Phaser.Scale.FIT,
 		autoCenter: Phaser.Scale.CENTER_BOTH
 	},
 
@@ -18,7 +18,7 @@ const g_oConfig = {
 		}
 	},
 
-	scene: [CManager_InitScene, CManager_TitleScene, CManager_PlayScene]
+	scene: [CManager_PlayScene]
 };
 
 const g_oGame = new Phaser.Game(g_oConfig)
