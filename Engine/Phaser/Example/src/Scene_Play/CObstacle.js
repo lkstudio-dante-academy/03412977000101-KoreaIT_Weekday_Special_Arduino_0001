@@ -41,4 +41,9 @@ class CObstacle extends Phaser.GameObjects.Container  {
 		this.add(this.m_oSprite_UpObstacle);
 		this.add(this.m_oSprite_DownObstacle);
 	}
+
+	/** 상태를 갱신한다 */
+	update(a_nTime, a_nTime_Delta) {
+
+	}
 };

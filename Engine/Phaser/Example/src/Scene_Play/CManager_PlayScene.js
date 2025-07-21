@@ -58,7 +58,7 @@ class CManager_PlayScene extends Phaser.Scene {
 	}
 
 	/** 상태를 갱신한다 */
-	update(a_fTime, a_fTime_Delta) {
+	update(a_nTime, a_nTime_Delta) {
 		// 재시작 가능 할 경우
 		if (Phaser.Input.Keyboard.JustDown(this.m_oKey_Esc) && this.State == CManager_PlayScene.STATE_GAME_OVER) {
 			this.scene.restart();
@@ -69,9 +69,9 @@ class CManager_PlayScene extends Phaser.Scene {
 			return;
 		}
 
-		this.updateState_BG(a_fTime, a_fTime_Delta);
-		this.updateState_UIs(a_fTime, a_fTime_Delta);
-		this.updateState_Obstacle(a_fTime, a_fTime_Delta);
+		this.updateState_BG(a_nTime, a_nTime_Delta);
+		this.updateState_UIs(a_nTime, a_nTime_Delta);
+		this.updateState_Obstacle(a_nTime, a_nTime_Delta);
 
 		// 스페이스를 눌렀을 경우
 		if (Phaser.Input.Keyboard.JustDown(this.m_oKey_Space)) {
@@ -141,15 +141,15 @@ class CManager_PlayScene extends Phaser.Scene {
 	}
 
 	/** UI 상태를 갱신한다 */
-	updateState_UIs(a_fTime, a_fTime_Delta) {
+	updateState_UIs(a_nTime, a_nTime_Delta) {
 		this.m_oUIText_Score.setText(String(this.m_nScore));
 	}
 
 	/** 배경 상태를 갱신한다 */
-	updateState_BG(a_fTime, a_fTime_Delta) {
+	updateState_BG(a_nTime, a_nTime_Delta) {
 		for (var i = 0; i < this.m_oListSprites_BG.length; ++i) {
 			var oSprite_BG = this.m_oListSprites_BG[i];
-			oSprite_BG.setX(oSprite_BG.x + (this.m_fSpeed_Move * -1.0 * a_fTime_Delta / 1000.0));
+			oSprite_BG.setX(oSprite_BG.x + (this.m_fSpeed_Move * -1.0 * a_nTime_Delta / 1000.0));
 		}
 
 		// 위치 갱신이 필요 할 경우
@@ -162,12 +162,16 @@ class CManager_PlayScene extends Phaser.Scene {
 	}
 
 	/** 장애물을 상태를 갱신한다 */
-	updateState_Obstacle(a_fTime, a_fTime_Delta) {
-		this.m_fSkipTime_Obstacle += a_fTime_Delta / 1000.0;
+	updateState_Obstacle(a_nTime, a_nTime_Delta) {
+		this.m_fSkipTime_Obstacle += a_nTime_Delta / 1000.0;
+
+		for (var i = 0; i < this.m_oListObstacles.length; ++i) {
+			this.m_oListObstacles[i].update(a_nTime, a_nTime_Delta);
+		}
 
 		for (var i = 0; i < this.m_oListObstacles.length; ++i) {
 			var oObstacle = this.m_oListObstacles[i];
-			oObstacle.setX(oObstacle.x + (this.m_fSpeed_Move * -1.0 * a_fTime_Delta / 1000.0));
+			oObstacle.setX(oObstacle.x + (this.m_fSpeed_Move * -1.0 * a_nTime_Delta / 1000.0));
 
 			// 점수 획득이 가능 할 경우
 			if (oObstacle.m_bIsEnable_AcquireScore && oObstacle.x <= this.m_oSprite_Player.x) {
