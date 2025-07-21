@@ -14,11 +14,11 @@ const g_oConfig = {
 		default: "arcade",
 		
 		arcade: {
-			debug: true
+			debug: false
 		}
 	},
 
-	scene: [CManager_PlayScene]
+	scene: [CManager_TitleScene, CManager_PlayScene]
 };
 
 const g_oGame = new Phaser.Game(g_oConfig)
