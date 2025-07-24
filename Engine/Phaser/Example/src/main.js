@@ -14,7 +14,7 @@ const g_oConfig = {
 		default: "arcade",
 		
 		arcade: {
-			debug: false
+			debug: true
 		}
 	},
 
